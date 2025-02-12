@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles for tabs */
+.tab-panel {
+    transition: all 0.3s ease-in-out;
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.tab-panel.hidden {
+    transform: translateY(20px);
+    opacity: 0;
+    display: none !important;
+}
+
+.tab-button[data-active="true"] {
+    opacity: 1;
+    transform: scale(1.05);
+}
+
+.tab-button[data-active="false"] {
+    opacity: 0.7;
+    transform: scale(1);
+}
+
+/* Đảm bảo tab panel active hiển thị */
+.tab-panel.active {
+    display: block !important;
+}
+
+/* ... rest of your existing styles ... */ 

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub & Vercel Tools</title>
+    <link href="/css/output.css" rel="stylesheet">
+    <style>
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .menu {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .menu button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .form-section {
+            display: none;
+        }
+        .active {
+            display: block;
+        }
+        #drop-area {
+            border: 2px dashed #999;
+            padding: 20px;
+            text-align: center;
+            margin: 10px 0;
+        }
+        #status {
+            margin-top: 20px;
+        }
+        .history-item {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .timestamp {
+            color: #666;
+            font-size: 0.9em;
+        }
+        .error {
+            color: #dc3545;
+            padding: 10px;
+            border: 1px solid #dc3545;
+            border-radius: 4px;
+            background-color: #fff5f5;
+        }
+        .section {
+            transition: all 0.3s ease-in-out;
+        }
+        .section.hidden {
+            display: none;
+        }
+        .menu-btn.active {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <h1 class="text-3xl font-bold text-center mb-8 text-gray-800">GitHub & Vercel Tools</h1>
+        
+        <!-- Menu Tabs -->
+        <div class="flex justify-center gap-4 mb-8">
+            <button onclick="showSection('github-section')" 
+                    class="menu-btn active px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                GitHub
+            </button>
+            <button onclick="showSection('vercel-section')" 
+                    class="menu-btn px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors">
+                Vercel
+            </button>
+            <button onclick="showSection('history-section')" 
+                    class="menu-btn px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                Lịch Sử
+            </button>
+        </div>
+
+        <!-- GitHub Section -->
+        <div id="github-section" class="section active">
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-2xl font-semibold mb-4 text-gray-800">GitHub Repository</h2>
+                
+                <!-- Options -->
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Chọn hành động:</label>
+                    <div class="flex gap-4">
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="repoAction" value="create" 
+                                   class="form-radio text-blue-600" checked>
+                            <span class="ml-2">Tạo repository mới</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="repoAction" value="update" 
+                                   class="form-radio text-green-600">
+                            <span class="ml-2">Cập nhật repository có sẵn</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Repository Name Input -->
+                <div class="mb-6">
+                    <label for="githubRepoName" class="block text-gray-700 text-sm font-bold mb-2">
+                        Tên Repository:
+                    </label>
+                    <div class="flex gap-2">
+                        <input type="text" id="githubRepoName" 
+                               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                               placeholder="Nhập tên repository">
+                        <button id="checkRepoBtn" 
+                                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline hidden">
+                            Kiểm tra
+                        </button>
+                    </div>
+                    <p id="repoStatus" class="mt-2 text-sm"></p>
+                </div>
+
+                <!-- File Upload Area -->
+                <div id="drop-area" class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                    <input type="file" id="fileElem" multiple accept="*/*" class="hidden">
+                    <button id="fileSelect" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        Chọn Files
+                    </button>
+                    <p class="mt-2 text-gray-600">hoặc kéo thả files vào đây</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vercel Section -->
+        <div id="vercel-section" class="section hidden">
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-2xl font-semibold mb-4 text-gray-800">Deploy to Vercel</h2>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="vercelRepoUrl">
+                        URL GitHub Repository:
+                    </label>
+                    <input type="text" id="vercelRepoUrl" 
+                           class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                           placeholder="https://github.com/username/repo">
+                </div>
+                <button id="deployButton" 
+                        class="bg-black hover:bg-gray-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    Deploy to Vercel
+                </button>
+            </div>
+        </div>
+
+        <!-- History Section -->
+        <div id="history-section" class="section hidden">
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-2xl font-semibold mb-4 text-gray-800">Lịch Sử Deploy</h2>
+                <div id="history-list" class="space-y-4">
+                    <!-- History items will be inserted here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Status Display -->
+        <div id="status" class="mt-4"></div>
+    </div>
+
+    <script src="github.js"></script>
+    <script src="vercel.js"></script>
+    <script src="history.js"></script>
+
+    <script>
+        // Menu switching
+        function showSection(sectionId) {
+            // Update menu buttons
+            document.querySelectorAll('.menu-btn').forEach(btn => {
+                btn.classList.remove('active', 'bg-opacity-100');
+                btn.classList.add('bg-opacity-70');
+            });
+            document.querySelector(`button[onclick="showSection('${sectionId}')"]`).classList.add('active', 'bg-opacity-100');
+            
+            // Update sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.add('hidden');
+                section.classList.remove('active');
+            });
+            const currentSection = document.getElementById(sectionId);
+            currentSection.classList.remove('hidden');
+            currentSection.classList.add('active');
+            
+            // Clear status
+            document.getElementById('status').innerHTML = '';
+            
+            // Update history if needed
+            if (sectionId === 'history-section') {
+                History.updateHistoryDisplay();
+            }
+        }
+
+        // File upload handling
+        const fileSelect = document.getElementById('fileSelect');
+        const fileElem = document.getElementById('fileElem');
+        const dropArea = document.getElementById('drop-area');
+
+        fileSelect.addEventListener('click', () => {
+            fileElem.click();
+        });
+
+        fileElem.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+
+        // Drag and drop handling
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        dropArea.addEventListener('drop', (e) => {
+            const files = e.dataTransfer.files;
+            handleFiles(files);
+        });
+
+        // Xử lý radio buttons
+        const radioButtons = document.getElementsByName('repoAction');
+        const checkRepoBtn = document.getElementById('checkRepoBtn');
+        const repoNameInput = document.getElementById('githubRepoName');
+        const repoStatus = document.getElementById('repoStatus');
+
+        radioButtons.forEach(radio => {
+            radio.addEventListener('change', function() {
+                if (this.value === 'update') {
+                    checkRepoBtn.classList.remove('hidden');
+                } else {
+                    checkRepoBtn.classList.add('hidden');
+                    repoStatus.textContent = '';
+                }
+            });
+        });
+
+        // Kiểm tra repository
+        checkRepoBtn.addEventListener('click', async () => {
+            const repoName = repoNameInput.value.trim();
+            if (!repoName) {
+                repoStatus.textContent = 'Vui lòng nhập tên repository';
+                repoStatus.className = 'mt-2 text-sm text-red-600';
+                return;
+            }
+
+            try {
+                const exists = await GitHub.checkRepoExists(repoName);
+                if (exists) {
+                    repoStatus.textContent = 'Repository tồn tại và sẵn sàng để cập nhật';
+                    repoStatus.className = 'mt-2 text-sm text-green-600';
+                } else {
+                    repoStatus.textContent = 'Repository không tồn tại';
+                    repoStatus.className = 'mt-2 text-sm text-red-600';
+                }
+            } catch (error) {
+                repoStatus.textContent = 'Lỗi khi kiểm tra repository: ' + error.message;
+                repoStatus.className = 'mt-2 text-sm text-red-600';
+            }
+        });
+
+        // Cập nhật hàm handleFiles
+        async function handleFiles(files) {
+            try {
+                const repoName = document.getElementById('githubRepoName').value.trim();
+                if (!repoName) {
+                    throw new Error('Vui lòng nhập tên repository');
+                }
+
+                const action = document.querySelector('input[name="repoAction"]:checked').value;
+                const statusDiv = document.getElementById('status');
+                
+                if (action === 'update') {
+                    const exists = await GitHub.checkRepoExists(repoName);
+                    if (!exists) {
+                        throw new Error('Repository không tồn tại. Vui lòng kiểm tra lại tên repository.');
+                    }
+                }
+
+                statusDiv.textContent = action === 'create' ? 'Đang tạo repository mới...' : 'Đang cập nhật repository...';
+
+                const repoUrl = await GitHub.createOrUpdateRepo(files, repoName);
+                
+                statusDiv.innerHTML = `
+                    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
+                        <p>Đã ${action === 'create' ? 'tạo mới' : 'cập nhật'} repository thành công!</p>
+                        <p>Link: <a href="${repoUrl}" target="_blank" class="underline">${repoUrl}</a></p>
+                    </div>
+                `;
+
+                await History.saveDeployHistory(repoUrl, null, 'github');
+            } catch (error) {
+                document.getElementById('status').innerHTML = `
+                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                        <p class="font-bold">Lỗi!</p>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Vercel Deploy
+        document.getElementById('deployButton').addEventListener('click', async () => {
+            try {
+                const repoUrl = document.getElementById('vercelRepoUrl').value.trim();
+                if (!repoUrl) {
+                    throw new Error('Vui lòng nhập URL GitHub repository');
+                }
+
+                const statusDiv = document.getElementById('status');
+                statusDiv.textContent = 'Đang triển khai lên Vercel...';
+
+                // Sử dụng Vercel.deployToVercel thay vì deployToVercel
+                const urls = await Vercel.deployToVercel(repoUrl);
+
+                // Lưu lịch sử deploy
+                await History.saveDeployHistory(repoUrl, urls, 'vercel');
+
+                statusDiv.innerHTML = `
+                    <p>Triển khai thành công!</p>
+                    <p><a href="https://${urls.deployUrl}" target="_blank">Xem trang web</a></p>
+                `;
+            } catch (error) {
+                document.getElementById('status').textContent = 
+                    'Có lỗi xảy ra: ' + error.message;
+            }
+        });
+    </script>
+</body>
+</html>
