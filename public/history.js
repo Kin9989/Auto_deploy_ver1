@@ -1,7 +1,7 @@
 const History = {
     async saveDeployHistory(githubUrl, vercelUrls, type = 'github') {
         try {
-            const response = await fetch('http://localhost:3000/api/history', {
+            const response = await fetch('https://auto-deploy-ver1.onrender.com/api/history', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -27,7 +27,7 @@ const History = {
 
     async updateHistoryDisplay() {
         try {
-            const response = await fetch('http://localhost:3000/api/history');
+            const response = await fetch('https://auto-deploy-ver1.onrender.com/api/history');
             if (!response.ok) {
                 throw new Error('Không thể tải lịch sử');
             }

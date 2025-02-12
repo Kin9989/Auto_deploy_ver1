@@ -6,7 +6,7 @@ const Vercel = {
     async initialize() {
         try {
             console.log('Initializing Vercel...');
-            const response = await fetch('http://localhost:3000/api/config');
+            const response = await fetch('https://auto-deploy-ver1.onrender.com/api/config');
 
             if (!response.ok) {
                 const error = await response.json();
